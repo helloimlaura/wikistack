@@ -1,10 +1,9 @@
 const express = require("express");
 const morgan = require("morgan");
-// const routes = require("./routes/posts");
+const wikiRoutes = require("./routes/wiki");
+const userRoutes = require("./routes/user");
 const { db, Page, User } = require("./models");
-
 const app = express();
-const layout = require("./views/layout");
 
 app.use(morgan("dev"));
 app.use(express.static(__dirname + "/public"));
@@ -12,18 +11,16 @@ app.use(express.urlencoded({
   extended: false
 }));
 
-// app.use("/posts", routes);
+app.use("/wiki", wikiRoutes);
+app.use("/user", userRoutes);
 
-// more middleware goes here
-
-app.get('/', (req, res) => {
-  res.send(layout(''));
-});
-
-// db.authenticate(). // this was just to check
-// then(() => {
-//   console.log('connected to the database');
+// app.get('/', (req, res) => {
+//   res.send(layout(''));
 // });
+
+app.get('/', (req, res, next) => {
+  res.redirect('/wiki');
+})
 
 const syncAndConnect = async () => {
   await Page.sync();
