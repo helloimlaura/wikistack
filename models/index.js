@@ -8,7 +8,7 @@ const Page = db.define('pages', {
   },
   slug: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: true
     //isUrl: true
   },
   content:  {
@@ -30,5 +30,12 @@ const User = db.define('users', {
     allowNull: false
   }
 });
+
+Page.beforeCreate((page) => {
+  // Removes all non-alphanumeric characters from title
+  // And make whitespace underscore
+  page.slug = page.title.replace(/\s+/g, '_').replace(/\W/g, '');
+});
+
 
 module.exports = { db, Page, User};
