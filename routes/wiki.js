@@ -19,7 +19,7 @@ router.post("/", async (req, res, next) => {
 
   try {
     await page.save();
-    res.redirect('/' + page.slug);
+    res.redirect("/wiki/" + page.slug); //don't understand why not just /
   } catch (error) { next(error) }
 
 });
