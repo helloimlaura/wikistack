@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Page } = require("../models");
-const { addPage } = require("../views");
+const { addPage, wikiPage } = require("../views");
 const layout = require("../views/layout");
 
 
@@ -19,7 +19,7 @@ router.post("/", async (req, res, next) => {
 
   try {
     await page.save();
-    res.redirect('/');
+    res.redirect('/' + page.slug);
   } catch (error) { next(error) }
 
 });
@@ -28,6 +28,16 @@ router.get("/add", (req, res, next) => {
     res.send(addPage());
 });
 
+router.get("/:slug", async (req, res, next) => {
+  try {
+      const foundPage = await Page.findOne({
+      where: {slug: req.params.slug}
+    });
+    res.send(wikiPage(foundPage, 'author'));
+  } catch (error) {
+    next(error);
+  }
 
+})
 
-  module.exports = router
+module.exports = router
