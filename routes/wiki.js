@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { Page, User } = require("../models");
-const { addPage, wikiPage, main } = require("../views");
+const { addPage, editPage, errorPage, wikiPage, main } = require("../views");
 const layout = require("../views/layout");
 
 
@@ -52,16 +52,38 @@ router.get("/add", (req, res, next) => {
     res.send(addPage());
 });
 
+
+router.get("/:slug/edit", async (req, res, next) => {
+  try {
+    const foundPage = await Page.findOne({
+      where: {slug: req.params.slug}
+    });
+    if (foundPage) {
+      res.send(editPage(foundPage, await foundPage.getAuthor()));
+    } else {
+      res.send(errorPage(req.params.slug));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
 router.get("/:slug", async (req, res, next) => {
   try {
       const foundPage = await Page.findOne({
       where: {slug: req.params.slug}
     });
-    res.send(wikiPage(foundPage, 'author'));
+    if (foundPage) {
+      res.send(wikiPage(foundPage, await foundPage.getAuthor()));
+    } else {
+      res.send(errorPage(req.params.slug));
+    }
   } catch (error) {
     next(error);
   }
+});
 
-})
 
-module.exports = router
+module.exports = router;

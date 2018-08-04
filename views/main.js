@@ -9,8 +9,11 @@ module.exports = (pages) => layout(html`
     <button type="submit">Search</button>
   </form>
   <hr>
-  <div class="list-group">
-     ${pages.map(page => html`
-     <a href="/wiki/${page.slug}" class="list-group-item">${page.title}</a>`
-     )}
-  </div>`);
+  <ul class="list-unstyled">
+    <ul>
+      ${pages.map(page => html`<li>
+        <a href="/wiki/${page.slug}">${page.title}</a>
+      </li>`)}
+    </ul>
+  </ul>
+`);
